@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+VERSION="$(cd "$PROJECT_DIR" && node -p "require('./package.json').version")"
+APP="$PROJECT_DIR/dist/DSH Pet.app"
+ELECTRON_APP="$PROJECT_DIR/node_modules/electron/dist/Electron.app"
+[[ -d "$ELECTRON_APP" ]] || { echo 'Run npm ci first.' >&2; exit 1; }
+mkdir -p "$PROJECT_DIR/dist"
+rm -rf "$APP"
+cp -R "$ELECTRON_APP" "$APP"
+RESOURCES="$APP/Contents/Resources"
+rm -rf "$RESOURCES/app"
+mkdir -p "$RESOURCES/app"
+for item in main.js preload.js package.json backend renderer assets LICENSE NOTICE.md; do
+  cp -R "$PROJECT_DIR/$item" "$RESOURCES/app/"
+done
+cp "$PROJECT_DIR/assets/icon.icns" "$RESOURCES/icon.icns"
+PLIST="$APP/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c 'Set :CFBundleName DSH Pet' "$PLIST"
+/usr/libexec/PlistBuddy -c 'Set :CFBundleDisplayName DSH Pet' "$PLIST"
+/usr/libexec/PlistBuddy -c 'Set :CFBundleIdentifier com.dshpet.desktop' "$PLIST"
+/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$PLIST"
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION" "$PLIST"
+/usr/libexec/PlistBuddy -c 'Set :CFBundleIconFile icon.icns' "$PLIST"
+/usr/libexec/PlistBuddy -c 'Set :LSUIElement true' "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c 'Add :LSUIElement bool true' "$PLIST"
+codesign --force --deep --sign - "$APP"
+codesign --force --sign - --requirements '=designated => identifier "com.dshpet.desktop"' "$APP"
+codesign --verify --deep --strict "$APP"
+ZIP="$PROJECT_DIR/dist/DSH-Pet-$VERSION-mac-$(node -p process.arch)-local.zip"
+rm -f "$ZIP"
+ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
+echo "$APP"
+echo "$ZIP"

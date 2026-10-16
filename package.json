@@ -1,0 +1,18 @@
+{
+  "name": "dsh-pet",
+  "version": "0.1.4",
+  "description": "A standalone desktop pet that mirrors DeepSeek Harness task states",
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "test": "node test/state.js && node test/restart.js && node test/zstd.js && node test/watch.js && node test/deepseek-balance.js && node test/control.js && node test/client.js && node test/boundaries.js",
+    "test:native": "electron test/native.js",
+    "build:plugin": "node scripts/build-plugin.js",
+    "package:mac": "bash scripts/package-mac.sh",
+    "test:treasure-native": "electron test/treasure-native.js"
+  },
+  "devDependencies": {
+    "electron": "33.4.11"
+  }
+}

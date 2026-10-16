@@ -1,0 +1,119 @@
+/* Behind the pet, with only the exposed chest taking pointer events. */
+#pixel, #mascot, #cat { position: relative; z-index: 2; }
+
+#treasure-chest {
+  position: absolute;
+  z-index: 1;
+  width: 104px;
+  height: 88px;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  border-radius: 20px;
+  background: transparent;
+  color: #a57129;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  touch-action: manipulation;
+  transition: filter .16s ease, transform .16s ease;
+  transform-origin: 50% 85%;
+}
+#treasure-chest[hidden], #treasure-pouch[hidden], #treasure-panel[hidden] { display: none !important; }
+#treasure-chest:hover { transform: translateY(-2px) rotate(2deg); filter: brightness(1.08); }
+#treasure-chest[data-side="left"]:hover { transform: translateY(-2px) rotate(-2deg); }
+#treasure-chest:focus-visible { outline: 2px solid #8daeea; outline-offset: -4px; }
+#treasure-chest[aria-expanded="true"] { filter: brightness(1.1); }
+#treasure-chest[data-balance-known="false"]::after, #treasure-pouch[data-balance-known="false"]::after {
+  content: '?';
+  position: absolute;
+  top: 18px;
+  right: 7px;
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #c8d7ef;
+  border-radius: 50%;
+  background: #f6f9ff;
+  color: #6683b4;
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+}
+#treasure-chest[data-balance-known="false"][data-side="left"]::after { right: auto; left: 7px; }
+.treasure-art { width: 100%; height: 100%; display: block; pointer-events: none; overflow: visible; }
+#treasure-pouch {
+  position: absolute;
+  z-index: 3;
+  width: 56px;
+  height: 60px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  touch-action: manipulation;
+  transition: transform .16s ease, filter .16s ease;
+  transform-origin: 50% 85%;
+}
+#treasure-pouch:hover { transform: translateY(-2px) rotate(-3deg); filter: brightness(1.08); }
+#treasure-pouch:focus-visible { outline: 2px solid #9d99e6; outline-offset: -3px; }
+#treasure-pouch[aria-expanded="true"] { filter: brightness(1.12); }
+.treasure-pouch-art { width: 100%; height: 100%; display: block; pointer-events: none; overflow: visible; }
+.treasure-sparkle { animation: treasure-glint 3.5s ease-in-out infinite; transform-origin: 99px 32px; }
+.treasure-sparkle-alt { animation-delay: 1.2s; transform-origin: 25px 20px; }
+@keyframes treasure-glint { 0%, 30%, 70%, 100% { opacity: .45; } 50% { opacity: 1; } }
+
+#treasure-panel {
+  position: fixed;
+  z-index: 35;
+  display: flex;
+  flex-direction: column;
+  width: min(284px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  padding: 12px;
+  margin: 0;
+  border: 1px solid #e1cba6;
+  border-radius: 17px;
+  background: linear-gradient(145deg, #fffdf7, #faf5eb);
+  box-shadow: 0 8px 24px rgba(61, 42, 30, .25), inset 0 1px 0 #fff;
+  color: #443528;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans", "Helvetica Neue", sans-serif;
+  font-size: 11px;
+  -webkit-app-region: no-drag;
+  cursor: default;
+}
+.treasure-top { display: flex; align-items: center; gap: 7px; padding-bottom: 10px; flex-shrink: 0; }
+.treasure-emblem { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 8px; color: #5f7dcc; background: #e9eefb; font-size: 14px; }
+.treasure-title { flex: 1; margin: 0; padding: 0; font-size: 13px; font-weight: 720; letter-spacing: .1px; color: #624728; }
+.treasure-close { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: none; border-radius: 8px; background: transparent; color: #997f62; font-size: 21px; cursor: pointer; }
+.treasure-close:hover { background: #efe5d4; color: #674a2a; }
+.treasure-content { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 1px 2px 0; scrollbar-width: thin; scrollbar-color: #d4c2a7 transparent; }
+.treasure-currency { margin-bottom: 7px; padding: 9px 11px 8px; border: 1px solid #ead8b9; border-radius: 11px; background: linear-gradient(115deg, #fff7e4, #fffdf6); }
+.treasure-currency-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.treasure-total-label { color: #82643a; font-size: 10px; font-weight: 650; }
+.treasure-currency-code { padding: 1px 5px; border: 1px solid #e2cba1; border-radius: 5px; color: #92713b; font-size: 9px; font-weight: 650; }
+.treasure-total-amount, .treasure-pouch-amount { display: flex; align-items: baseline; gap: 4px; margin: 3px 0 4px; color: #7e5520; font-size: 26px; font-weight: 750; letter-spacing: -.7px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.treasure-pouch-amount { color: #6961a4; }
+#treasure-panel[data-view="pouch"] .treasure-currency { border-color: #d6d3ee; background: linear-gradient(115deg, #f0efff, #faf9ff); }
+#treasure-panel[data-view="pouch"] .treasure-title { color: #62568e; }
+#treasure-panel[data-view="pouch"] .treasure-hint { color: #8a80a4; }
+.treasure-money-symbol { font-size: 17px; font-weight: 550; opacity: .7; }
+.treasure-detail { display: flex; align-items: center; justify-content: space-between; gap: 6px; border-top: 1px solid #eddfc4; padding-top: 5px; margin-top: 4px; color: #9a896f; font-size: 10px; }
+.treasure-detail-value { color: #8b7a62; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; min-width: 0; }
+.treasure-notice { margin: 0 0 8px; padding: 9px; border: 1px solid #d8e1f2; border-radius: 9px; background: #f0f4fc; color: #576a8e; font-size: 11px; line-height: 1.6; }
+.treasure-notice-error, .treasure-notice-stale { border-color: #edd3ae; background: #fff5e6; color: #94703d; }
+.treasure-notice-stale { font-size: 10px; }
+.treasure-hint { margin: 5px 0 2px; padding: 0; color: #ae9a7d; font-size: 9px; line-height: 1.5; }
+.treasure-actions { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding-top: 10px; margin-top: 7px; border-top: 1px solid #ece0cd; flex-shrink: 0; }
+.treasure-updated { flex: 1; min-width: 0; color: #a5937a; font-size: 9px; line-height: 1.4; overflow-wrap: anywhere; }
+.treasure-refresh { flex-shrink: 0; padding: 6px 11px; border: 1px solid #ccdaf5; border-radius: 8px; background: #eaf0fd; color: #5272aa; font-family: inherit; font-size: 11px; font-weight: 650; cursor: pointer; }
+.treasure-refresh:hover { border-color: #afc4ec; background: #dde8fb; }
+.treasure-refresh:disabled { opacity: .6; cursor: progress; }
+.treasure-refresh:focus-visible, .treasure-close:focus-visible { outline: 2px solid #8daeea; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  #treasure-chest, #treasure-pouch { transition: none; }
+  .treasure-sparkle { animation: none; }
+}

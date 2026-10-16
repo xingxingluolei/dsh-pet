@@ -1,0 +1,30 @@
+node_modules/
+dist/
+.DS_Store
+
+# Local media production and personal recordings
+videos/
+*.m4a
+*.wav
+*.mp3
+*.mp4
+*.mov
+*.pcm
+*.npz
+*.npy
+
+# Credentials, account/session data and local machine state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+runtime.json
+runtime-location.json
+commands.json
+*.log
+.dsh/
+.dsh-pet/
+backups/
